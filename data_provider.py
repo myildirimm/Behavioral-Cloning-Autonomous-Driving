@@ -1,4 +1,3 @@
-#from socket import CAN_BCM_RX_ANNOUNCE_RESUME
 import pandas as pd
 import numpy as np
 import random
@@ -11,7 +10,7 @@ class DataProvider:
         if max_frame_id:
             self.tracks = self.tracks[self.tracks.frame < max_frame_id]
 
-        self.tracks = self.tracks[self.tracks.xVelocity > 0]
+        # self.tracks = self.tracks[self.tracks.xVelocity > 0]
         self.tracks.xAcceleration -= self.tracks.xAcceleration.mean()
         # self.tracks.xAcceleration -= self.tracks.xAcceleration.mean()
         self.tracks.yAcceleration = self.tracks.yAcceleration * 10
@@ -43,6 +42,9 @@ class DataProvider:
             return self.validation[self.validation.frame == frame_id]
         frame_id = random.randint(0, self.number_of_frames - 1)
 
+        return self.get_frame(frame_id)
+
+    def get_frame(self, frame_id):
         return self.tracks[self.tracks.frame == frame_id]
 
     def get_random_car_data(self, validation=False):

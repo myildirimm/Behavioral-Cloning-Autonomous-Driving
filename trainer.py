@@ -13,15 +13,15 @@ def vehicles_to_tensor(v, i):
         vv[j] =vv[j].copy()
         vv[j]["x"] -= cv["x"]
         if vv[j]["x"] < 0:
-            vv[j]["x"] += vv[j]["width"]
+            vv[j]["x"] += vv[j]["origWidth"]
         else:
-            vv[j]["x"] -= cv["width"]
+            vv[j]["x"] -= cv["origWidth"]
 
         vv[j]["y"] -= cv["y"]
         if vv[j]["y"] < 0:
-            vv[j]["y"] += vv[j]["height"]
+            vv[j]["y"] += vv[j]["origHeight"]
         else:
-            vv[j]["y"] -= cv["height"]
+            vv[j]["y"] -= cv["origHeight"]
 
         vv[j]["xVelocity"] -= cv["xVelocity"]
         vv[j]["yVelocity"] -= cv["yVelocity"]
@@ -30,7 +30,7 @@ def vehicles_to_tensor(v, i):
     # vv = [[x["x"], x["y"], x["width"], x["height"], x["xVelocity"], x["yVelocity"]] for x in vv]
     # list = [[cv["normX"], cv["normY"], cv["width"], cv["height"], cv["xVelocity"], cv["yVelocity"]]] + vv
 
-    vv = [[x["x"], x["y"],  x["xVelocity"], x["yVelocity"]] for x in vv]
+    vv = [[x["x"], x["y"],  x["xVelocity"], x["yVelocity"], x["width"], x["height"], cv["xVelocity"], cv["yVelocity"]] for x in vv]
     list = [[cv["normX"], cv["normY"], cv["xVelocity"], cv["yVelocity"]]] + vv
 
 
@@ -39,8 +39,8 @@ def vehicles_to_tensor(v, i):
 class NeuralNetwork(nn.Module):
     def __init__(self):
         super(NeuralNetwork, self).__init__()
-        self.conv = nn.ReLU(nn.Conv2d(1, 40, (1,4)))
-        self.conv2 = nn.ReLU(nn.Conv2d(40, 40, (1,1)))
+        self.conv = nn.ReLU(nn.Conv2d(1, 120, (1,8)))
+        self.conv2 = nn.ReLU(nn.Conv2d(60, 30, (1,1)))
         self.flatten = nn.Flatten()
         self.linear_relu_stack = nn.Sequential(
             # nn.Conv2d(1, 30, (1,6)),
@@ -63,7 +63,7 @@ class NeuralNetwork(nn.Module):
             # nn.LazyBatchNorm1d(),
             # nn.Tanh(),
             nn.ReLU(),
-            nn.LazyLinear(200),
+            nn.LazyLinear(100),
             nn.ReLU(),
             nn.LazyLinear(2),
         )
